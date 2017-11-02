@@ -10,7 +10,7 @@ app.listen(3000, function () {
 })
 
 var Gpio = require('pigpio').Gpio,
-led = new Gpio(11, {mode: Gpio.OUTPUT}),
+led = new Gpio(17, {mode: Gpio.OUTPUT}),
 dutyCycle = 0;
 
 setInterval(function () {
