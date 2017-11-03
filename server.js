@@ -22,3 +22,11 @@ setTimeout(function() {
     led.writeSync(0);  // Turn LED off.
     led.unexport();    // Unexport GPIO and free resources
 }, 5000);
+
+function off() {
+  led.writeSync(0);
+}
+
+function on() {
+  led.writeSync(1);
+}
