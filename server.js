@@ -31,3 +31,7 @@ function off() {
 function on() {
   led.writeSync(1);
 }
+
+document.getElementById('on').onclick = function() {
+  led.writeSync(1);
+};
