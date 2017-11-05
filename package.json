@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "^4.16.2",
     "onoff": "^1.1.8",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "rpio": "^0.9.19"
   },
   "devDependencies": {},
   "scripts": {
