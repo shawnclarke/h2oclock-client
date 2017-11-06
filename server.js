@@ -1,8 +1,7 @@
 var express = require('express');
 var app = express();
 var path = require('path');
-
-//var  rpio  =  require('rpio');
+var  rpio  =  require('rpio');
 
 /* var Gpio = require('onoff').Gpio,
 led = new Gpio(17, 'out');
@@ -44,7 +43,7 @@ setTimeout(function() {
  * Set the initial state to low.  The state is set prior to the pin becoming
  * active, so is safe for devices which require a stable setup.
  */
-//rpio.open(12,  rpio.OUTPUT,  rpio.LOW);
+rpio.open(12,  rpio.OUTPUT,  rpio.LOW);
 
 /*
  * The sleep functions block, but rarely in these simple programs does one care
@@ -65,7 +64,7 @@ setTimeout(function() {
 
 app.get('/on', function (req, res) {
   console.log('about to write to GPIO');
-  //rpio.write(12,  rpio.HIGH);
+  rpio.write(12,  rpio.HIGH);
   console.log('written to GPIO');
   return res.json('hi');
 });
