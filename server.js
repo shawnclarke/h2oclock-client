@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var path = require('path');
 
-var rpio = require('rpio');
+//var  rpio  =  require('rpio');
 
 /* var Gpio = require('onoff').Gpio,
 led = new Gpio(17, 'out');
@@ -28,7 +28,7 @@ function turnOff() {
 app.use(express.static(__dirname + '/'));
 
 
- 
+
 /* var iv = setInterval(function(){
 	led.writeSync(led.readSync() === 0 ? 1 : 0)
 }, 500);
@@ -44,27 +44,38 @@ setTimeout(function() {
  * Set the initial state to low.  The state is set prior to the pin becoming
  * active, so is safe for devices which require a stable setup.
  */
-rpio.open(12, rpio.OUTPUT, rpio.LOW);
- 
+//rpio.open(12,  rpio.OUTPUT,  rpio.LOW);
+
 /*
  * The sleep functions block, but rarely in these simple programs does one care
  * about that.  Use a setInterval()/setTimeout() loop instead if it matters.
  */
-for (var i = 0; i < 5; i++) {
-        /* On for 1 second */
-        rpio.write(12, rpio.HIGH);
-        rpio.sleep(1);
- 
-        /* Off for half a second (500ms) */
-        rpio.write(12, rpio.LOW);
-        rpio.msleep(500);
-}
 
 
-app.get('/on', function(req, res){
-          rpio.write(12, rpio.HIGH);
+/* for  (var  i  =  0;  i  <  5;  i++)  {
+          //. On for 1 second
+          rpio.write(12,  rpio.HIGH);
+          rpio.sleep(1);
+
+          // Off for half a second (500ms) 
+          rpio.write(12,  rpio.LOW);
+          rpio.msleep(500);
+} */
+
+
+app.get('/on', function (req, res) {
+  console.log('about to write to GPIO');
+  //rpio.write(12,  rpio.HIGH);
+  console.log('written to GPIO');
+  return res.json('hi');
 });
 
-app.listen(3333, function(){
+app.get('/off', function (req, res) {
+  console.log('about to write to GPIO');
+  rpio.write(12,  rpio.LOW);
+  console.log('written to GPIO');
+});
+
+app.listen(3333, function () {
   console.log('server is listening');
 });
