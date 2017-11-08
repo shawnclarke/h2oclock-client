@@ -20,7 +20,6 @@ $(function () {
     }
     
        $onButton.on('click', ledOn);
-       $("#off").on('click', ledOff);
-       console.log('shawn');
+       $offButton.on('click', ledOff);
     
    });
