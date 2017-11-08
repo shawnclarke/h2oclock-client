@@ -10,7 +10,17 @@ $(function () {
                console.log(response);
            });
        }
+
+       const ledOff = () => {
+        $.ajax({
+            url: '/off'
+        }).done((response) => {
+            console.log(response);
+        });
+    }
     
        $onButton.on('click', ledOn);
+       $("#off").on('click', ledOff);
+       console.log('shawn');
     
    });
