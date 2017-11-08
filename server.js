@@ -52,12 +52,10 @@ function getWeather(param1, callback){
   JSON.parse(weather);
 }
 
-getWeather("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", function(){
   request('https://api.openweathermap.org/data/2.5/forecast?id=2634838&APPID=b7b73e00a4e940f2319cad207b3682f3', function(err, res, body) {
     if (err) {
       throw err;
     }
     console.log(body);
   });
-});
 
