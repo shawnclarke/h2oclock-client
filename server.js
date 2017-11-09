@@ -5,6 +5,7 @@ var rpio =  require('rpio');
 var schedule = require('node-schedule');
 var request = require('request');
 var openWeatherMaps = 'https://api.openweathermap.org/data/2.5/forecast?id=2634838&APPID=b7b73e00a4e940f2319cad207b3682f3';
+var darkSkys = 'https://api.darksky.net/forecast/5ca5b0037be5109d0159838b86bd83e1/51.588124,-0.037381?exclude=currently,minutely,hourly,alerts,flags'
 
 //web server
 app.use(express.static(__dirname + '/'));
@@ -66,4 +67,4 @@ function funcTwo(body){
         request(url, callback);
       }
     
-      getApiData(openWeatherMaps, getApiDataCallback);
+      getApiData(darkSkys, getApiDataCallback);
