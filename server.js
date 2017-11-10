@@ -4,6 +4,8 @@ var path = require('path');
 var rpio =  require('rpio');
 var schedule = require('node-schedule');
 var request = require('request');
+var openWeatherMaps = 'https://api.openweathermap.org/data/2.5/forecast?id=2634838&APPID=b7b73e00a4e940f2319cad207b3682f3';
+var darkSkys = 'https://api.darksky.net/forecast/5ca5b0037be5109d0159838b86bd83e1/51.588124,-0.037381?exclude=currently,minutely,hourly,alerts,flags'
 
 //web server
 app.use(express.static(__dirname + '/'));
@@ -47,17 +49,22 @@ var j2 = schedule.scheduleJob(rule2, function(){
 
 //get the weather data
 
-function getWeather(param1, callback){
-  var weather = callback();
-  JSON.parse(weather);
-}
-
-getWeather("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", function(){
-  request('https://api.openweathermap.org/data/2.5/forecast?id=2634838&APPID=b7b73e00a4e940f2319cad207b3682f3', function(err, res, body) {
-    if (err) {
-      throw err;
-    }
-    console.log(body);
-  });
-});
-
+function funcTwo(body){
+  console.log(body);
+  }
+  
+  function getApiDataCallback(err, res, body){  
+        if (err) {
+          throw err;
+        }
+        var jsonObj = JSON.parse(body);
+        //console.log(jsonObj);
+        funcTwo(jsonObj);
+      }
+    
+    
+      function getApiData(url, callback){
+        request(url, callback);
+      }
+    
+      getApiData(darkSkys, getApiDataCallback);
