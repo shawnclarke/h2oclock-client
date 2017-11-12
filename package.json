@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.2",
+    "mongoose": "^4.13.1",
     "node-schedule": "^1.2.5",
     "path": "^0.12.7",
     "rpio": "^0.9.19"
