@@ -82,6 +82,8 @@ function getApiDataCallback(err, res, body){
         typeOfDay = "med";
       }
       console.log(typeOfDay);
+      console.log(weatherObj.temperatureHigh);
+      console.log(weatherObj.precipIntensity);
     }
   
     getApiData(darkSkys, getApiDataCallback);
