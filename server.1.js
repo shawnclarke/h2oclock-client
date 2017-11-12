@@ -60,12 +60,10 @@ function getApiDataCallback(err, res, body){
       var jsonObj = JSON.parse(body);
       setWeatherObj(jsonObj);
     }
-  
-  
+    
     function getApiData(url, callback){
       request(url, callback);
     }
-
 
     function setWeatherObj(body){
     weatherObj.summary = body.daily.data[0].summary;
