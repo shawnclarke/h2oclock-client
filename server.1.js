@@ -2,17 +2,12 @@ var express = require('express');
 var app = express();
 var path = require('path');
 //var rpio =  require('rpio');
-<<<<<<< HEAD
-var schedule = require('node-schedule');
-var request = require('request');
-=======
 //var schedule = require('node-schedule');
 var request = require('request');
 var openWeatherMaps = 'https://api.openweathermap.org/data/2.5/forecast?id=2634838&APPID=b7b73e00a4e940f2319cad207b3682f3';
 var darkSkys = 'https://api.darksky.net/forecast/5ca5b0037be5109d0159838b86bd83e1/51.588124,-0.037381?exclude=currently,minutely,hourly,alerts,flags&units=uk2'
 var weatherObj = {};
 var typeOfDay = "";
->>>>>>> 5a142f8995ea881fc7f23d5ff45435770278712a
 
 //web server
 app.use(express.static(__dirname + '/'));
@@ -52,41 +47,6 @@ rule2.second = 20;
 
 var j2 = schedule.scheduleJob(rule2, function(){
   rpio.write(12,  rpio.LOW);
-<<<<<<< HEAD
-});
- */
-//get the weather data
-
-// function getWeather(weather){
-//   // var weather = callback();
-//   console.log(weather);
-// }
-
-function ShawnCallback(err, res, body) {
-  if (err) {
-    throw err;
-  }
-  var weather = JSON.parse(body);
-  // console.log(weather);
-  printSummary(weather);
-}
-
-function printSummary(weatherData) {
-  console.log(weatherData.cod);
-}
-
-function getWeather() {
-  request(
-    'https://api.openweathermap.org/data/2.5/forecast?id=2634838&APPID=b7b73e00a4e940f2319cad207b3682f3',
-    ShawnCallback
-  );
-}
-
-getWeather();
-
-console.log('hello');
-
-=======
 }); */
 
 //get the weather data
@@ -123,8 +83,11 @@ function getApiDataCallback(err, res, body){
       } else {
         typeOfDay = "med";
       }
+      setupSchedulers(typeOfDay);
+    }
+
+    function setupSchedulers(typeOfDay) {
       console.log(typeOfDay);
     }
   
     getApiData(darkSkys, getApiDataCallback);
->>>>>>> 5a142f8995ea881fc7f23d5ff45435770278712a
