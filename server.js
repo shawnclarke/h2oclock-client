@@ -112,6 +112,7 @@ function setTypeOfDay(){
     typeOfDay = "med";
   }
   console.log(typeOfDay);
+  weatherObj.typeOfDay = typeOfDay;
   console.log(weatherObj.temperatureHigh);
   console.log(weatherObj.precipIntensity);
 }
