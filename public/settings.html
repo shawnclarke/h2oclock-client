@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Settings</title>
+    <link rel="stylesheet" href="./css/materialize.min.css">
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+
+<body>
+    <div class="container">
+            <nav>
+                    <div class="nav-wrapper blue">
+                      <a href="index.html" class="brand-logo">H2o'clock</a>
+                      <ul id="nav-mobile" class="right hide-on-med-and-down">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="settings.html">Settings</a></li>
+                      </ul>
+                    </div>
+                  </nav>
+                  <p></p>
+                  <div class="row">
+                        <div class="col s6">
+                          <section>
+                            <h3>Watering times</h3>
+                              <button type="button" class="btn waves-effect waves-light blue" id="loadHigh">High time slots</button>
+                              <button type="button" class="btn waves-effect waves-light blue" id="loadMed">Medium time slots</button>
+                              <button type="button" class="btn waves-effect waves-light blue" id="loadLow">Low time slots</button>
+                              <table>
+                                <thead>
+                                  <tr>
+                                    <th>Water requirement</th>
+                                    <th>Time</th>
+                                    <th>Duration</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="friends-list">
+                                  <tr>
+                                    <td>No time slots loaded</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                          </section>
+                        </div>
+    </div>
+
+    <script type="text/javascript" src="./scripts/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="./scripts/materialize.min.js"></script>
+    <script src="./scripts/main.js"></script>
+</body>
+
+</html>

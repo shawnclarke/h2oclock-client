@@ -24,7 +24,7 @@ $(function () {
         $weatherData.append(`<p><strong>Weather summary:</strong> ${weatherObj.summary}</p>`);
         $weatherData.append(`<p><strong>High temperature:</strong> ${weatherObj.temperatureHigh}</p>`);
         $weatherData.append(`<p><strong>Max precipitation intensity:</strong> ${weatherObj.precipIntensity}</p>`);
-        $waterAmount.append(`<h1 style="color: lightblue"> ${weatherObj.typeOfDay}</h1>`);
+        $waterAmount.append(`<h1 style="color: #2196F3"> ${weatherObj.typeOfDay}</h1>`);
     }
 
 

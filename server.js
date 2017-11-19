@@ -41,9 +41,19 @@ var weatherSchema = new Schema({
 
 var weather = mongoose.model('weather', weatherSchema);
 
+var timeSlotSchema = new Schema({
+  hour: Number,
+  minute: Number,
+  duration: Number,
+  typeOfDay: String
+});
+
+var timeSlot = mongoose.model('timeSlot', timeSlotSchema);
+
 //web server
 app.use(express.static(__dirname + '/public'));
 
+//Raspberry Pi on/off api
 app.get('/on', function (req, res) {
   console.log('about to write to GPIO');
   rpio.write(12, rpio.HIGH);
@@ -57,11 +67,77 @@ app.get('/off', function (req, res) {
   console.log('written off to GPIO');
 });
 
-//DB api
-app.get('/config', function (request, response) {
-  var cars = [{ name: 'ferarri' }, { name: 'lamborghini' }];
-  return response.json(cars);
+//Time slots api
+app.get('/timeslots/high', function (req, res) {
+  timeSlot.find({
+    typeOfDay: "high"
+  }).exec(function(err, timeSlots){
+    if(err) {
+      return res.status(500).send(err);
+    }
+    console.log(req.query);
+    return res.json(timeSlots);
+  });
 });
+
+app.get('/timeslots/med', function (req, res) {
+  timeSlot.find({
+    typeOfDay: "med"
+  }).exec(function(err, timeSlots){
+    if(err) {
+      return res.status(500).send(err);
+    }
+    console.log(req.query);
+    return res.json(timeSlots);
+  });
+});
+
+app.get('/timeslots/low', function (req, res) {
+  timeSlot.find({
+    typeOfDay: "low"
+  }).exec(function(err, timeSlots){
+    if(err) {
+      return res.status(500).send(err);
+    }
+    console.log(req.query);
+    return res.json(timeSlots);
+  });
+});
+
+app.post('/timeslots', function(req, res){
+  var newTimeSlot = new timeSlot(req.body);
+  newTimeSlot.save(function(err, timeSlot) {
+    if(err) {
+      return res.status(500).send(err);
+    }
+    return res.status(201).json(timeSlot);
+  })
+});
+
+app.delete('/timeslots/:id', function(req, res){
+  var timeSlotToBeDeleted = req.params.id;
+  timeSlot.remove({
+    _id: timeSlotToBeDeleted
+  }, function(err, timeSlots, result){
+    if (err) {
+      return res.status(500).send(err);
+    }
+    return res.status(202).send('DONE');
+  });
+  });
+
+  app.put('/timeslots/:id', function(req, res){
+    var timeSlotToBeUpdated = req.params.id;
+    var updates = req.body;
+    timeSlot.findOneAndUpdate({
+      _id: timeSlotToBeUpdated
+    }, updates, function(err, timeSlots, result){
+      if (err) {
+        return res.status(500).send(err);
+      }
+      return res.status(202).send('DONE')
+    });
+  })
 
 //Type of day api
 app.get('/typeofday', function (request, response) {
@@ -112,7 +188,6 @@ function setWeatherObj(body) {
   weatherObj.icon = body.daily.data[0].icon;
   weatherObj.temperatureHigh = body.daily.data[0].temperatureHigh;
   weatherObj.precipIntensity = body.daily.data[0].precipIntensity;
-  console.log(body.daily.data[0]);
   setTypeOfDay();
 }
 
