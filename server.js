@@ -28,6 +28,18 @@ promise.then(function(db) {
   console.log('CONNECTION ERROR', err);
 });
 
+var Schema = mongoose.Schema;
+
+var weatherSchema = new Schema({
+  summary:  String,
+  icon: Number,
+  temperatureHigh: String,
+  precipetationhigh: Number,
+  typeOfDay: String
+});
+
+var weather = mongoose.model('weather', weatherSchema);
+
 //web server
 app.use(express.static(__dirname + '/public'));
 
@@ -89,11 +101,9 @@ function getApiDataCallback(err, res, body){
   setWeatherObj(jsonObj);
 }
 
-
 function getApiData(url, callback){
   request(url, callback);
 }
-
 
 function setWeatherObj(body){
 weatherObj.summary = body.daily.data[0].summary;
@@ -113,8 +123,22 @@ function setTypeOfDay(){
   }
   console.log(typeOfDay);
   weatherObj.typeOfDay = typeOfDay;
+  writeWeatherToDb(weatherObj);
   console.log(weatherObj.temperatureHigh);
   console.log(weatherObj.precipIntensity);
+}
+
+//Update today's weather in DB
+
+function writeWeatherToDb(weatherObj){
+  console.log('starting write to DB');
+  var todayWeather = new weather(weatherObj);
+  todayWeather.save(function(err, weather) {
+    if(err) {
+      console.log(err);
+    }
+    console.log('weather written to DB ' + friend);
+  })
 }
 
 getApiData(darkSkys, getApiDataCallback);
