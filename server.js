@@ -42,8 +42,8 @@ var weatherSchema = new Schema({
 var weather = mongoose.model('weather', weatherSchema);
 
 var timeSlotSchema = new Schema({
-  hour: Number,
-  minute: Number,
+  hour: String,
+  minute: String,
   duration: Number,
   typeOfDay: String
 });

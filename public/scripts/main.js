@@ -6,6 +6,10 @@ $(function () {
     const $weatherData = $("#weatherData");
     const $waterAmount = $("#waterAmount");
 
+    const errorHandler = (error) => {
+        console.error(error);
+    }
+
     //skyicons
     var skycons = new Skycons({ "color": "lightblue" });
 
@@ -27,8 +31,7 @@ $(function () {
         $waterAmount.append(`<h1 style="color: #2196F3"> ${weatherObj.typeOfDay}</h1>`);
     }
 
-
-    //Pi control on/off
+   //Pi control on/off
 
     const ledOn = () => {
         $.ajax({
