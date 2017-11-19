@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var path = require('path');
-var rpio =  require('rpio');
+var rpio = require('rpio');
 var schedule = require('node-schedule');
 var request = require('request');
 var mongoose = require('mongoose');
@@ -22,19 +22,20 @@ var promise = mongoose.connect('mongodb://localhost/client_config', {
   useMongoClient: true
 });
 
-promise.then(function(db) {
+promise.then(function (db) {
   console.log('DATABASE CONNECTED!!');
-}).catch(function(err){
+}).catch(function (err) {
   console.log('CONNECTION ERROR', err);
 });
 
 var Schema = mongoose.Schema;
 
 var weatherSchema = new Schema({
-  summary:  String,
-  icon: Number,
-  temperatureHigh: String,
-  precipetationhigh: Number,
+  time: Date,
+  summary: String,
+  icon: String,
+  temperatureHigh: Number,
+  precipIntensity: Number,
   typeOfDay: String
 });
 
@@ -45,25 +46,25 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/on', function (req, res) {
   console.log('about to write to GPIO');
-  rpio.write(12,  rpio.HIGH);
+  rpio.write(12, rpio.HIGH);
   console.log('written to GPIO');
   return res.json('hi');
 });
 
 app.get('/off', function (req, res) {
   console.log('about to write off to GPIO');
-  rpio.write(12,  rpio.LOW);
+  rpio.write(12, rpio.LOW);
   console.log('written off to GPIO');
 });
 
 //DB api
-app.get('/config', function(request, response){
-  var cars = [{name: 'ferarri'}, {name: 'lamborghini'}];
+app.get('/config', function (request, response) {
+  var cars = [{ name: 'ferarri' }, { name: 'lamborghini' }];
   return response.json(cars);
 });
 
 //Type of day api
-app.get('/typeofday', function(request, response){
+app.get('/typeofday', function (request, response) {
   return response.json(weatherObj);
 });
 
@@ -77,7 +78,7 @@ app.listen(3333, function () {
 
 //GPIO control
 
-rpio.open(12,  rpio.OUTPUT,  rpio.LOW);
+rpio.open(12, rpio.OUTPUT, rpio.LOW);
 //rpio.write(12,  rpio.HIGH);
 //rpio.write(12,  rpio.LOW);
 
@@ -86,14 +87,14 @@ rpio.open(12,  rpio.OUTPUT,  rpio.LOW);
 var writeWeather = new schedule.RecurrenceRule();
 writeWeather.second = 20;
 
-var j3 = schedule.scheduleJob(writeWeather, function(){
+var j3 = schedule.scheduleJob(writeWeather, function () {
   console.log(typeOfDay);
 });
 
 
 //get the weather data
 
-function getApiDataCallback(err, res, body){  
+function getApiDataCallback(err, res, body) {
   if (err) {
     throw err;
   }
@@ -101,22 +102,24 @@ function getApiDataCallback(err, res, body){
   setWeatherObj(jsonObj);
 }
 
-function getApiData(url, callback){
+function getApiData(url, callback) {
   request(url, callback);
 }
 
-function setWeatherObj(body){
-weatherObj.summary = body.daily.data[0].summary;
-weatherObj.icon = body.daily.data[0].icon;
-weatherObj.temperatureHigh = body.daily.data[0].temperatureHigh;
-weatherObj.precipIntensity = body.daily.data[0].precipIntensity;
-setTypeOfDay();
+function setWeatherObj(body) {
+  weatherObj.time = body.daily.data[0].time;
+  weatherObj.summary = body.daily.data[0].summary;
+  weatherObj.icon = body.daily.data[0].icon;
+  weatherObj.temperatureHigh = body.daily.data[0].temperatureHigh;
+  weatherObj.precipIntensity = body.daily.data[0].precipIntensity;
+  console.log(body.daily.data[0]);
+  setTypeOfDay();
 }
 
-function setTypeOfDay(){
-  if((weatherObj.temperatureHigh >= 30 && weatherObj.precipIntensity < 2) || (weatherObj.temperatureHigh >= 25 && weatherObj.precipIntensity < 1)){
+function setTypeOfDay() {
+  if ((weatherObj.temperatureHigh >= 30 && weatherObj.precipIntensity < 2) || (weatherObj.temperatureHigh >= 25 && weatherObj.precipIntensity < 1)) {
     typeOfDay = "high";
-  } else if (weatherObj.temperatureHigh < 18 && weatherObj.precipIntensity < 1) {
+  } else if (weatherObj.temperatureHigh < 18 && weatherObj.precipIntensity > 1) {
     typeOfDay = "low";
   } else {
     typeOfDay = "med";
@@ -124,22 +127,33 @@ function setTypeOfDay(){
   console.log(typeOfDay);
   weatherObj.typeOfDay = typeOfDay;
   writeWeatherToDb(weatherObj);
-  console.log(weatherObj.temperatureHigh);
-  console.log(weatherObj.precipIntensity);
 }
 
 //Update today's weather in DB
 
-function writeWeatherToDb(weatherObj){
-  console.log('starting write to DB');
-  var todayWeather = new weather(weatherObj);
-  todayWeather.save(function(err, weather) {
-    if(err) {
-      console.log(err);
+/* function findWeather() {
+  weather.find({}).exec(function (err, weather) {
+    console.log(weather.length);
+    if (weather.length > 0){
+      console.log('Weather obj id ' + weather[0]._id);
+      updateWeatherToDb(weather[0]._id);
+    } else {
+      console.log('Wrting new weatherObj to DB');
+      writeWeather(weatherObj);
     }
-    console.log('weather written to DB ' + friend);
-  })
-}
+  })} */
 
+  function writeWeatherToDb(weatherObj) {
+    console.log('starting write to DB');
+    var todayWeather = new weather(weatherObj);
+    todayWeather.save(function (err, weather) {
+      if (err) {
+        console.log(err);
+      }
+      console.log('weather written to DB ' + weather);
+    })
+  }
+  
 getApiData(darkSkys, getApiDataCallback);
+
 
