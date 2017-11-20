@@ -1,6 +1,5 @@
 # h2oclock-client
-**Current status of project:**  
-settings.html still need further work  
+**Current status of project:**   
 Scheduling in server.js needs to be implemented  
   
 **Introduction**  
