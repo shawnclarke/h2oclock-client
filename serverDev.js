@@ -16,6 +16,7 @@ var openWeatherMaps = 'https://api.openweathermap.org/data/2.5/forecast?id=26348
 var darkSkys = 'https://api.darksky.net/forecast/5ca5b0037be5109d0159838b86bd83e1/51.588124,-0.037381?exclude=currently,minutely,hourly,alerts,flags&units=uk2'
 var weatherObj = {};
 var typeOfDay = "";
+var scheduleArr = [];
 
 //DB server
 mongoose.Promise = global.Promise;
@@ -72,8 +73,8 @@ app.get('/off', function (req, res) {
 app.get('/timeslots/high', function (req, res) {
   timeSlot.find({
     typeOfDay: "high"
-  }).exec(function(err, timeSlots){
-    if(err) {
+  }).exec(function (err, timeSlots) {
+    if (err) {
       return res.status(500).send(err);
     }
     console.log(req.query);
@@ -84,8 +85,8 @@ app.get('/timeslots/high', function (req, res) {
 app.get('/timeslots/med', function (req, res) {
   timeSlot.find({
     typeOfDay: "med"
-  }).exec(function(err, timeSlots){
-    if(err) {
+  }).exec(function (err, timeSlots) {
+    if (err) {
       return res.status(500).send(err);
     }
     console.log(req.query);
@@ -96,8 +97,8 @@ app.get('/timeslots/med', function (req, res) {
 app.get('/timeslots/low', function (req, res) {
   timeSlot.find({
     typeOfDay: "low"
-  }).exec(function(err, timeSlots){
-    if(err) {
+  }).exec(function (err, timeSlots) {
+    if (err) {
       return res.status(500).send(err);
     }
     console.log(req.query);
@@ -105,41 +106,41 @@ app.get('/timeslots/low', function (req, res) {
   });
 });
 
-app.post('/timeslots', function(req, res){
+app.post('/timeslots', function (req, res) {
 
   var newTimeSlot = new timeSlot(req.body);
-  newTimeSlot.save(function(err, timeSlot) {
-    if(err) {
+  newTimeSlot.save(function (err, timeSlot) {
+    if (err) {
       return res.status(500).send(err);
     }
     return res.status(201).json(timeSlot);
   })
 });
 
-app.delete('/timeslots/:id', function(req, res){
+app.delete('/timeslots/:id', function (req, res) {
   var timeSlotToBeDeleted = req.params.id;
   timeSlot.remove({
     _id: timeSlotToBeDeleted
-  }, function(err, timeSlots, result){
+  }, function (err, timeSlots, result) {
     if (err) {
       return res.status(500).send(err);
     }
     return res.status(202).send('DONE');
   });
-  });
+});
 
-  app.put('/timeslots/:id', function(req, res){
-    var timeSlotToBeUpdated = req.params.id;
-    var updates = req.body;
-    timeSlot.findOneAndUpdate({
-      _id: timeSlotToBeUpdated
-    }, updates, function(err, timeSlots, result){
-      if (err) {
-        return res.status(500).send(err);
-      }
-      return res.status(202).send('DONE')
-    });
-  })
+app.put('/timeslots/:id', function (req, res) {
+  var timeSlotToBeUpdated = req.params.id;
+  var updates = req.body;
+  timeSlot.findOneAndUpdate({
+    _id: timeSlotToBeUpdated
+  }, updates, function (err, timeSlots, result) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    return res.status(202).send('DONE')
+  });
+})
 
 //Type of day api
 app.get('/typeofday', function (request, response) {
@@ -165,11 +166,44 @@ app.listen(3333, function () {
 
 //Testing schedule
 var writeWeather = new schedule.RecurrenceRule();
-writeWeather.second = 20;
+writeWeather.second = [10, 20, 30, 40];
 
-var sched1 = schedule.scheduleJob(writeWeather, function () {
+/* var sched1 = schedule.scheduleJob(writeWeather, function () {
   console.log(typeOfDay);
+}); */
+
+var j = schedule.scheduleJob({name: 'one',  second: 5}, function () {
+  console.log('Time for tea1!');
+  //console.log(j);
 });
+
+schedule.scheduleJob({ second: 10}, function () {
+  console.log('Time for tea2!');
+  //console.log(j);
+});
+
+schedule.scheduleJob({ second: 15}, function () {
+  console.log('Time for tea3!');
+  //console.log(j);
+});
+
+var jobList = schedule.scheduledJobs;
+//console.log(util.inspect(jobList, true, 7, true));
+//console.log('j: ', j.name);
+
+var jobList = schedule.scheduledJobs;
+//console.log(Array.isArray(jobList));
+for(jobName in jobList){
+  var job = 'jobList.' + jobName;
+  job.jobname = "one";
+  console.log(job);
+
+}
+
+j.cancel();
+console.log(jobList);
+//console.log('joblist: ', jobList);
+
 
 
 //get the weather data
@@ -206,33 +240,87 @@ function setTypeOfDay() {
   console.log(typeOfDay);
   weatherObj.typeOfDay = typeOfDay;
   writeWeatherToDb(weatherObj);
+  getTimeSlots(typeOfDay);
 }
 
-//Update today's weather in DB
-
-/* function findWeather() {
-  weather.find({}).exec(function (err, weather) {
-    console.log(weather.length);
-    if (weather.length > 0){
-      console.log('Weather obj id ' + weather[0]._id);
-      updateWeatherToDb(weather[0]._id);
-    } else {
-      console.log('Wrting new weatherObj to DB');
-      writeWeather(weatherObj);
+function writeWeatherToDb(weatherObj) {
+  var todayWeather = new weather(weatherObj);
+  todayWeather.save(function (err, weather) {
+    if (err) {
+      console.log(err);
     }
-  })} */
+    //console.log('weather written to DB ' + weather);
 
-  function writeWeatherToDb(weatherObj) {
-    console.log('starting write to DB');
-    var todayWeather = new weather(weatherObj);
-    todayWeather.save(function (err, weather) {
-      if (err) {
-        console.log(err);
-      }
-      console.log('weather written to DB ' + weather);
-    })
+  })
+}
+
+//get timeslots for schedule and add to scheduleArr
+
+function getTimeSlots(typeOfDay) {
+  switch (typeOfDay) {
+    case 'high':
+      getHighSlots();
+      break;
+    case 'med':
+      getMedSlots();
+      break;
+    case 'low':
+      getLowSlots();
+      break;
   }
-  
+}
+
+function getHighSlots() {
+  timeSlot.find({
+    typeOfDay: "high"
+  }).exec(function (err, timeSlots) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    extractTimes(timeSlots);
+  });
+}
+
+function getMedSlots() {
+  timeSlot.find({
+    typeOfDay: "med"
+  }).exec(function (err, timeSlots) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    extractTimes(timeSlots);
+  });
+}
+
+function getLowSlots() {
+  timeSlot.find({
+    typeOfDay: "low"
+  }).exec(function (err, timeSlots) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    extractTimes(timeSlots);
+  });
+}
+
+function extractTimes(timeSlots){
+  timeSlots.forEach(function(item, index) {
+    k = schedule.scheduleJob({second: 5}, function () {
+      console.log('Time for coffee!');
+    });
+    scheduleArr.push({
+      hour: item.hour,
+      minute: item.minute,
+      duration: item.duration
+    })
+  });
+  k.cancel();  
+  console.log(scheduleArr);
+  console.log('k: ' , k);
+  console.log('k: ' , k);
+
+}
+
 getApiData(darkSkys, getApiDataCallback);
 
 
