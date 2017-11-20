@@ -1,3 +1,4 @@
+const util = require('util');
 var express = require('express');
 var app = express();
 var path = require('path');
@@ -42,10 +43,10 @@ var weatherSchema = new Schema({
 var weather = mongoose.model('weather', weatherSchema);
 
 var timeSlotSchema = new Schema({
+  typeOfDay: String,
   hour: String,
   minute: String,
-  duration: Number,
-  typeOfDay: String
+  duration: Number
 });
 
 var timeSlot = mongoose.model('timeSlot', timeSlotSchema);
@@ -105,6 +106,7 @@ app.get('/timeslots/low', function (req, res) {
 });
 
 app.post('/timeslots', function(req, res){
+
   var newTimeSlot = new timeSlot(req.body);
   newTimeSlot.save(function(err, timeSlot) {
     if(err) {
