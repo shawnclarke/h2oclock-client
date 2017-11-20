@@ -1,4 +1,4 @@
-# h20clock-client
+# h2oclock-client
 **Current status of project:**  
 settings.html still need further work  
 Scheduling in server.js needs to be implemented  
