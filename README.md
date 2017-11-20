@@ -15,6 +15,7 @@ npm install will install all required node modules except for rpio - this module
   
 **Running**  
 There are two serverJs files, again this is so dev/testing work can be completed on a machine which isn't a Raspberry Pi.  server.js is the file to run on a Rpi (node server.js) and serverDev.js is a copy of server.js but it has any rpio module references commented out so please run this if not on a Rpi - obviously there will not be any rpio functionality.  
+Web ui can be access from http://localhost:3333
   
 **Technologies used**  
 Server:  
