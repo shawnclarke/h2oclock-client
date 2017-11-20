@@ -1,4 +1,8 @@
 # h20clock-client
+Current status of project  
+settings.html still need further work  
+Scheduling in server.js needs to be implemented  
+  
 Introduction  
 This project is an inteligent control for garden irrigation.  
 An Internet connected Raspberry Pi is also connected (via GPIO header) to a relay which connects to a solinoid operated valve on an irrigation system.  
