@@ -1,6 +1,6 @@
 # h2oclock-client
 **Current status of project:**   
-Scheduling in server.js needs to be implemented  
+This is now a working project, it is an MVP right now though!   
   
 **Introduction**  
 This project is an inteligent control for garden irrigation.  
