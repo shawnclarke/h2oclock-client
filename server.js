@@ -1,4 +1,3 @@
-const util = require('util');
 var express = require('express');
 var app = express();
 var path = require('path');
@@ -16,6 +15,7 @@ var openWeatherMaps = 'https://api.openweathermap.org/data/2.5/forecast?id=26348
 var darkSkys = 'https://api.darksky.net/forecast/5ca5b0037be5109d0159838b86bd83e1/51.588124,-0.037381?exclude=currently,minutely,hourly,alerts,flags&units=uk2'
 var weatherObj = {};
 var typeOfDay = "";
+var scheduledJobsArr = [];
 
 //DB server
 mongoose.Promise = global.Promise;
@@ -56,24 +56,19 @@ app.use(express.static(__dirname + '/public'));
 
 //Raspberry Pi on/off api
 app.get('/on', function (req, res) {
-  console.log('about to write to GPIO');
-  rpio.write(12, rpio.HIGH);
-  console.log('written to GPIO');
-  return res.json('hi');
+  startWatering();
 });
 
 app.get('/off', function (req, res) {
-  console.log('about to write off to GPIO');
-  rpio.write(12, rpio.LOW);
-  console.log('written off to GPIO');
+  stopWatering()
 });
 
 //Time slots api
 app.get('/timeslots/high', function (req, res) {
   timeSlot.find({
     typeOfDay: "high"
-  }).exec(function(err, timeSlots){
-    if(err) {
+  }).exec(function (err, timeSlots) {
+    if (err) {
       return res.status(500).send(err);
     }
     console.log(req.query);
@@ -84,8 +79,8 @@ app.get('/timeslots/high', function (req, res) {
 app.get('/timeslots/med', function (req, res) {
   timeSlot.find({
     typeOfDay: "med"
-  }).exec(function(err, timeSlots){
-    if(err) {
+  }).exec(function (err, timeSlots) {
+    if (err) {
       return res.status(500).send(err);
     }
     console.log(req.query);
@@ -96,8 +91,8 @@ app.get('/timeslots/med', function (req, res) {
 app.get('/timeslots/low', function (req, res) {
   timeSlot.find({
     typeOfDay: "low"
-  }).exec(function(err, timeSlots){
-    if(err) {
+  }).exec(function (err, timeSlots) {
+    if (err) {
       return res.status(500).send(err);
     }
     console.log(req.query);
@@ -105,71 +100,56 @@ app.get('/timeslots/low', function (req, res) {
   });
 });
 
-app.post('/timeslots', function(req, res){
+app.post('/timeslots', function (req, res) {
 
   var newTimeSlot = new timeSlot(req.body);
-  newTimeSlot.save(function(err, timeSlot) {
-    if(err) {
+  newTimeSlot.save(function (err, timeSlot) {
+    if (err) {
       return res.status(500).send(err);
     }
+    console.log('new time slot added');
+    killScheduledJobs(typeOfDay);
     return res.status(201).json(timeSlot);
   })
 });
 
-app.delete('/timeslots/:id', function(req, res){
+app.delete('/timeslots/:id', function (req, res) {
   var timeSlotToBeDeleted = req.params.id;
   timeSlot.remove({
     _id: timeSlotToBeDeleted
-  }, function(err, timeSlots, result){
+  }, function (err, timeSlots, result) {
     if (err) {
       return res.status(500).send(err);
     }
+    console.log('Time slot deleted');
+    killScheduledJobs(typeOfDay);
     return res.status(202).send('DONE');
   });
-  });
+});
 
-  app.put('/timeslots/:id', function(req, res){
-    var timeSlotToBeUpdated = req.params.id;
-    var updates = req.body;
-    timeSlot.findOneAndUpdate({
-      _id: timeSlotToBeUpdated
-    }, updates, function(err, timeSlots, result){
-      if (err) {
-        return res.status(500).send(err);
-      }
-      return res.status(202).send('DONE')
-    });
-  })
+app.put('/timeslots/:id', function (req, res) {
+  var timeSlotToBeUpdated = req.params.id;
+  var updates = req.body;
+  timeSlot.findOneAndUpdate({
+    _id: timeSlotToBeUpdated
+  }, updates, function (err, timeSlots, result) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    console.log('Time slot amended');
+    killScheduledJobs(typeOfDay);
+    return res.status(202).send('DONE')
+  });
+})
 
 //Type of day api
 app.get('/typeofday', function (request, response) {
   return response.json(weatherObj);
 });
 
-
 app.listen(3333, function () {
   console.log('server is listening on port 3333');
 });
-
-
-
-
-//GPIO control
-
-rpio.open(12, rpio.OUTPUT, rpio.LOW);
-//rpio.write(12,  rpio.HIGH);
-//rpio.write(12,  rpio.LOW);
-
-//Daily schedule - get weather report
-
-//Testing schedule
-var writeWeather = new schedule.RecurrenceRule();
-writeWeather.second = 20;
-
-var sched1 = schedule.scheduleJob(writeWeather, function () {
-  console.log(typeOfDay);
-});
-
 
 //get the weather data
 
@@ -205,33 +185,103 @@ function setTypeOfDay() {
   console.log(typeOfDay);
   weatherObj.typeOfDay = typeOfDay;
   writeWeatherToDb(weatherObj);
+  killScheduledJobs(typeOfDay);
 }
 
-//Update today's weather in DB
-
-/* function findWeather() {
-  weather.find({}).exec(function (err, weather) {
-    console.log(weather.length);
-    if (weather.length > 0){
-      console.log('Weather obj id ' + weather[0]._id);
-      updateWeatherToDb(weather[0]._id);
-    } else {
-      console.log('Wrting new weatherObj to DB');
-      writeWeather(weatherObj);
+function writeWeatherToDb(weatherObj) {
+  var todayWeather = new weather(weatherObj);
+  todayWeather.save(function (err, weather) {
+    if (err) {
+      console.log(err);
     }
-  })} */
+  })
+}
 
-  function writeWeatherToDb(weatherObj) {
-    console.log('starting write to DB');
-    var todayWeather = new weather(weatherObj);
-    todayWeather.save(function (err, weather) {
-      if (err) {
-        console.log(err);
-      }
-      console.log('weather written to DB ' + weather);
-    })
+//get timeslots for schedule and add to scheduleArr
+
+function killScheduledJobs(typeOfDay) {
+  if (scheduledJobsArr.length > 0) {
+    scheduledJobsArr.forEach(function (element) {
+      console.log('job is being killed', element);
+      element.cancel();
+      scheduledJobsArr = [];
+    });
+    getTimeSlots(typeOfDay);
+  } else {
+    getTimeSlots(typeOfDay);
   }
-  
+}
+
+function getTimeSlots(typeOfDay) {
+  switch (typeOfDay) {
+    case 'high':
+      getHighSlots();
+      break;
+    case 'med':
+      getMedSlots();
+      break;
+    case 'low':
+      getLowSlots();
+      break;
+  }
+}
+
+function getHighSlots() {
+  timeSlot.find({
+    typeOfDay: "high"
+  }).exec(function (err, timeSlots) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    createJobSchedules(timeSlots);
+  });
+}
+
+function getMedSlots() {
+  timeSlot.find({
+    typeOfDay: "med"
+  }).exec(function (err, timeSlots) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    createJobSchedules(timeSlots);
+  });
+}
+
+function getLowSlots() {
+  timeSlot.find({
+    typeOfDay: "low"
+  }).exec(function (err, timeSlots) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    createJobSchedules(timeSlots);
+  });
+}
+
+function createJobSchedules(timeSlots) {
+  timeSlots.forEach(function (element) {
+    scheduledJobsArr.push(
+      schedule.scheduleJob({ hour: element.hour, minute: element.minute }, function () {
+        console.log('Watering started!');
+        setTimeout(function () {
+          console.log('Watering stopped!');
+        }, element.duration * 60000);
+      }));
+  });
+}
+
+//Do the watering - GPIO control
+
+rpio.open(12, rpio.OUTPUT, rpio.LOW);
+
+function startWatering() {
+  rpio.write(12,  rpio.HIGH);
+  console.log('Start watering!');
+}
+
+function stopWatering() {
+  rpio.write(12,  rpio.Low);
+  console.log('Stop watering!');
+}
 getApiData(darkSkys, getApiDataCallback);
-
-
