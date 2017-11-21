@@ -109,10 +109,13 @@ $(function () {
                     getLowTimeSlots();
                     break;
             }
-            $timeSlotInputTypeOfDay.val('')
-            $timeSlotInputHour.val('')
-            $timeSlotInputMinute.val('')
-            $timeSlotInputDuration.val('')
+            $timeSlotInputTypeOfDay.val('');
+            $timeSlotInputHour.val('');
+            $timeSlotInputMinute.val('');
+            $timeSlotInputDuration.val('');
+            $updateBtn.hide();
+            $submitBtn.show();
+            $addUpdate.text('Add a time slot');
         }).fail(errorHandler);
     }
 

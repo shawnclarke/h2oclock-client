@@ -287,4 +287,12 @@ function stopWatering() {
   rpio.write(12,  rpio.LOW);
   console.log('Stop watering!');
 }
+
+//Get things started!
+
+  schedule.scheduleJob({ hour: 5, minute: 01 }, function () {
+    console.log('Getting the weather forecast');
+    getApiData(darkSkys, getApiDataCallback);
+  });
+
 getApiData(darkSkys, getApiDataCallback);
