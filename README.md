@@ -9,7 +9,7 @@ A nodeJs server runs on the Pi and it checks for the weather forecast each morni
 There is a web interface to setup the watering time slots and to override the wattering control.  
   
 **Installation**  
-Mongo DB needs to be installed  
+Mongo DB and NodeJs needs to be installed  
 npm install will install all required node modules except for rpio - this module will not work on a Windows machine and maybe not a Mac?  So if testing or doing dev work on a machine other than a Raspberry Pi things will be fine, if installing on a Pi, also run: npm install rpio  
   
 **Running**  
