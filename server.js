@@ -128,8 +128,11 @@ app.delete('/timeslots/:id', function (req, res) {
 });
 
 app.put('/timeslots/:id', function (req, res) {
+  console.log(req.body);
   var timeSlotToBeUpdated = req.params.id;
   var updates = req.body;
+  delete updates._id;
+  console.log(updates);
   timeSlot.findOneAndUpdate({
     _id: timeSlotToBeUpdated
   }, updates, function (err, timeSlots, result) {
@@ -177,7 +180,7 @@ function setWeatherObj(body) {
 function setTypeOfDay() {
   if ((weatherObj.temperatureHigh >= 30 && weatherObj.precipIntensity < 2) || (weatherObj.temperatureHigh >= 25 && weatherObj.precipIntensity < 1)) {
     typeOfDay = "high";
-  } else if (weatherObj.temperatureHigh < 18 && weatherObj.precipIntensity > 1) {
+  } else if ((weatherObj.temperatureHigh < 18 && weatherObj.precipIntensity > 1) || weatherObj.temperatureHigh < 15) {
     typeOfDay = "low";
   } else {
     typeOfDay = "med";
@@ -263,9 +266,9 @@ function createJobSchedules(timeSlots) {
   timeSlots.forEach(function (element) {
     scheduledJobsArr.push(
       schedule.scheduleJob({ hour: element.hour, minute: element.minute }, function () {
-        console.log('Watering started!');
+        startWatering();
         setTimeout(function () {
-          console.log('Watering stopped!');
+          stopWatering();
         }, element.duration * 60000);
       }));
   });
@@ -281,7 +284,7 @@ function startWatering() {
 }
 
 function stopWatering() {
-  rpio.write(12,  rpio.Low);
+  rpio.write(12,  rpio.LOW);
   console.log('Stop watering!');
 }
 getApiData(darkSkys, getApiDataCallback);

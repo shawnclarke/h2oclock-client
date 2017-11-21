@@ -128,8 +128,11 @@ app.delete('/timeslots/:id', function (req, res) {
 });
 
 app.put('/timeslots/:id', function (req, res) {
+  console.log(req.body);
   var timeSlotToBeUpdated = req.params.id;
   var updates = req.body;
+  delete updates._id;
+  console.log(updates);
   timeSlot.findOneAndUpdate({
     _id: timeSlotToBeUpdated
   }, updates, function (err, timeSlots, result) {
