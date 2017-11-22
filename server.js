@@ -57,10 +57,12 @@ app.use(express.static(__dirname + '/public'));
 //Raspberry Pi on/off api
 app.get('/on', function (req, res) {
   startWatering();
+  return res.status(200).send('DONE');
 });
 
 app.get('/off', function (req, res) {
-  stopWatering()
+  stopWatering();
+  return res.status(200).send('DONE');
 });
 
 //Time slots api
@@ -180,7 +182,7 @@ function setWeatherObj(body) {
 function setTypeOfDay() {
   if ((weatherObj.temperatureHigh >= 30 && weatherObj.precipIntensity < 2) || (weatherObj.temperatureHigh >= 25 && weatherObj.precipIntensity < 1)) {
     typeOfDay = "high";
-  } else if ((weatherObj.temperatureHigh < 18 && weatherObj.precipIntensity > 1) || weatherObj.temperatureHigh < 15) {
+  } else if ((weatherObj.temperatureHigh < 18 && weatherObj.precipIntensity > 1) || weatherObj.temperatureHigh < 16) {
     typeOfDay = "low";
   } else {
     typeOfDay = "med";
