@@ -5,7 +5,7 @@ This is now a working project, it is an MVP right now though!
 **Introduction**  
 This project is an intelligent control for garden irrigation.  
 An Internet connected Raspberry Pi is also connected (via GPIO header) to a relay which connects to a solenoid operated valve on an irrigation system.  
-A nodeJs server runs on the Pi and it checks for the weather forecast each morning for the upcoming day, works out which level of watering is required (high, med or low)  
+A nodeJs server runs on the Pi and it checks for the weather forecast each morning for the upcoming day, works out the required demand for watering (high, med or low).  
 Watering schedules are configured by the user for each of the watering demand levels (high, medium, low) and stored in a database.  
 Based on the watering demand for the day, a scheduler reads the relevant watering times from the database and operates the solenoid valve via the GPIO header based on the time slots.  
 There is a web interface to setup the watering time slots and to override the watering control.  
