@@ -1,7 +1,4 @@
 # h2oclock-client
-**Current status of project:**   
-This is now a working project, it is an MVP right now though!   
-  
 **Introduction**  
 This project is an intelligent control for garden irrigation to conserve water on colder/wetter days and to water more on hot/dry days.  
 An Internet connected Raspberry Pi is also connected (via GPIO header) to a relay which connects to a solenoid operated valve on an irrigation system.  
@@ -24,3 +21,7 @@ Server:
 Raspberry Pi hardware runs Express, MongoDB, cron like scheduler, Dark Sky weather api and a rpio module to allow nodeJs access to the GPIO headers on the Raspberry Pi  
 Web ui:  
 Fairly standard web ui, using Materializecss, Ajax requests to DB  
+  
+**Current status of project:**   
+This is now a working project, it is an MVP right now though!   
+  
