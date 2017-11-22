@@ -3,7 +3,7 @@
 This is now a working project, it is an MVP right now though!   
   
 **Introduction**  
-This project is an intelligent control for garden irrigation.  
+This project is an intelligent control for garden irrigation to conserve water when not much is is required and to water more on hot and dry days.  
 An Internet connected Raspberry Pi is also connected (via GPIO header) to a relay which connects to a solenoid operated valve on an irrigation system.  
 A nodeJs server runs on the Pi and it checks for the weather forecast each morning for the upcoming day, works out the required demand for watering (high, med or low).  
 Watering schedules are configured by the user for each of the watering demand levels (high, medium, low) and stored in a database.  
