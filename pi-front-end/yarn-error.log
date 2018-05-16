@@ -1,0 +1,60 @@
+Arguments: 
+  C:\nodejs\node-v6.13.1-win-x64\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add
+
+PATH: 
+  C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Enterprise Vault\EVClient\;C:\Program Files\Git\cmd;C:\Program Files\MongoDB\Server\3.4\bin;C:\Program Files (x86)\Yarn\bin;C:\Program Files (x86)\Plantronics\Spokes3G\;C:\nodejs\node-v6.13.1-win-x64;C:\Users\shawn.clarke\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\Microsoft VS Code\bin;C:\Users\shawn.clarke\AppData\Local\atom\bin;C:\Users\shawn.clarke\AppData\Local\Yarn\bin;C:\Users\shawn.clarke\AppData\Local\Programs\Fiddler;C:\Users\shawn.clarke\AppData\Roaming\npm;C:\nodejs\node-v6.13.1-win-x64
+
+Yarn version: 
+  1.3.2
+
+Node version: 
+  6.13.1
+
+Platform: 
+  win32 x64
+
+npm manifest: 
+  {
+    "name": "react-base",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "start": "webpack-dev-server --progress --open"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "react": "^16.2.0",
+      "react-dom": "^16.2.0"
+    },
+    "devDependencies": {
+      "babel-core": "^6.26.0",
+      "babel-loader": "^7.1.2",
+      "babel-preset-es2015": "^6.24.1",
+      "babel-preset-react": "^6.24.1",
+      "babel-preset-stage-0": "^6.24.1",
+      "css-loader": "^0.28.10",
+      "extract-text-webpack-plugin": "^3.0.2",
+      "html-webpack-plugin": "2.30.1",
+      "node-sass": "^4.7.2",
+      "sass-loader": "^6.0.6",
+      "style-loader": "^0.20.2",
+      "webpack": "^3.11.0",
+      "webpack-dev-server": "^2.11.1"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  SyntaxError: C:\non-dw\h2oclock-client\package.json: Unexpected token / in JSON at position 256
+      at Object.parse (native)
+      at C:\Program Files (x86)\Yarn\lib\cli.js:770:59
+      at next (native)
+      at step (C:\Program Files (x86)\Yarn\lib\cli.js:92:30)
+      at C:\Program Files (x86)\Yarn\lib\cli.js:103:13
