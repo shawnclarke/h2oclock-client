@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "mongoose": "^4.13.1",
     "node-schedule": "^1.2.5",
-    "path": "^0.12.7"
-    //"rpio": "^0.9.19"
+    "rpio": "^0.9.19"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "body-parser": "^1.18.2",
+    "path": "^0.12.7"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
