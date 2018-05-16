@@ -1,16 +1,18 @@
 {
   "name": "h2oclock-client",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "mongoose": "^4.13.1",
     "node-schedule": "^1.2.5",
+    "rpio": "^0.9.19"
+  },
+  "devDependencies": {
+    "body-parser": "^1.18.2",
     "path": "^0.12.7"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
